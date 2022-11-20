@@ -2,7 +2,7 @@
 $ ghdash --help
 Dashboard for Github account
 
-Usage: ghdash --config <CONFIG>
+Usage: ghdash [OPTIONS]
 
 Options:
   -c, --config <CONFIG>  alternate configuration file
@@ -15,7 +15,7 @@ Options:
 $ ghdash -h
 Dashboard for Github account
 
-Usage: ghdash --config <CONFIG>
+Usage: ghdash [OPTIONS]
 
 Options:
   -c, --config <CONFIG>  alternate configuration file
