@@ -1,0 +1,11 @@
+[package]
+name = "ghdash"
+authors = ["Jeremiah Russell <jrussell@jerus.ie>"]
+version = "0.1.0"
+description = "Dashboard for Github account"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = { version = "4.0.26", features = ["derive", "cargo"] }
