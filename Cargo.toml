@@ -12,3 +12,16 @@ clap = { version = "4.0.26", features = ["derive", "cargo"] }
 
 [dev-dependencies]
 trycmd = "0.14.4"
+
+[lib]
+name = "ghdash"
+path = "src/lib.rs"
+
+
+[[bin]]
+name = "ghdash"
+path = "src/main.rs"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
