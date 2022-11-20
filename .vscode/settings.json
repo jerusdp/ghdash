@@ -1,6 +1,7 @@
 {
     "conventionalCommits.scopes": [
         "cli",
-        "dashboard"
+        "dashboard",
+        "config"
     ]
 }
