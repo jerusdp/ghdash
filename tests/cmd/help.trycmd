@@ -6,6 +6,7 @@ Usage: ghdash [OPTIONS]
 
 Options:
   -c, --config <CONFIG>  alternate configuration file
+  -u, --user <USER>      github user name required for data
   -h, --help             Print help information
   -V, --version          Print version information
 
@@ -19,6 +20,7 @@ Usage: ghdash [OPTIONS]
 
 Options:
   -c, --config <CONFIG>  alternate configuration file
+  -u, --user <USER>      github user name required for data
   -h, --help             Print help information
   -V, --version          Print version information
 

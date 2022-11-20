@@ -14,11 +14,18 @@ pub struct GhDashCli {
     /// alternate configuration file
     #[arg(short, long)]
     config: Option<String>,
+    /// github user name required for data
+    #[arg(short, long)]
+    user: Option<String>,
 }
 
 impl GhDashCli {
     pub fn config(&self) -> Option<String> {
         self.config.clone()
+    }
+
+    pub fn user(&self) -> Option<String> {
+        self.user.clone()
     }
 }
 
