@@ -22,7 +22,12 @@ fn main() -> Result<(), Error> {
         confy::store(APP_NAME, config_name, cfg.clone())?;
     }
 
-    dbg!(args.user());
+    if let Some(token) = args.token() {
+        cfg.set_token(token.as_str());
+        confy::store(APP_NAME, config_name, cfg.clone())?;
+    }
+
+    dbg!(&cfg);
 
     let dashboard = Dashboard::new(cfg.user().as_str(), cfg.token().as_str())?;
 

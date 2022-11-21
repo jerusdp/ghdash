@@ -27,6 +27,10 @@ impl Dashboard {
             return Err(Error::MustHaveUser);
         }
 
+        if token.is_empty() {
+            return Err(Error::MustHaveToken);
+        }
+
         Ok(Dashboard {
             user: user.to_string(),
             token: token.to_string(),
