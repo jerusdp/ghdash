@@ -2,6 +2,10 @@
 //!
 
 use crate::error::Error;
+use octorust::types::Order;
+use octorust::types::ReposListOrgSort;
+use octorust::types::ReposListUserType;
+use octorust::{auth::Credentials, Client};
 
 /// Struct Representing a Dashboard and key data required to create the dashboard
 ///
@@ -22,7 +26,7 @@ impl Dashboard {
     /// Without a user and token to get data from Github the dashboard is meaningless
     /// therefore a new struct without this data is not meaningful
     ///
-    pub fn new(user: &str, token: &str) -> Result<Dashboard, Error> {
+    pub async fn new(user: &str, token: &str) -> Result<Dashboard, Error> {
         if user.is_empty() {
             return Err(Error::MustHaveUser);
         }
@@ -31,10 +35,30 @@ impl Dashboard {
             return Err(Error::MustHaveToken);
         }
 
+        let github = Client::new(String::from(user), Credentials::Token(String::from(token)))?;
+
+        let repos = github.repos();
+
+        let username = user;
+        let type_ = ReposListUserType::Owner;
+        let sort = ReposListOrgSort::FullName;
+        let direction = Order::Asc;
+        let repos_list = repos
+            .list_all_for_user(username, type_, sort, direction)
+            .await?;
+
+        let mut repositories: Vec<String> = vec![];
+
+        for repo in repos_list {
+            if !repo.fork {
+                repositories.push(repo.name);
+            }
+        }
+
         Ok(Dashboard {
             user: user.to_string(),
             token: token.to_string(),
-            repositories: vec![],
+            repositories,
         })
     }
 
