@@ -4,9 +4,8 @@ mod config;
 use crate::cli::GhDashCli;
 use crate::config::GhConfig;
 use clap::Parser;
-use ghdash::Dashboard;
+use ghdash::{Dashboard, Error, RepoScope};
 
-type Error = ghdash::Error;
 const APP_NAME: &str = clap::crate_name!();
 
 #[tokio::main]
@@ -28,7 +27,13 @@ async fn main() -> Result<(), Error> {
         confy::store(APP_NAME, config_name, cfg.clone())?;
     }
 
-    let dashboard = Dashboard::new(cfg.user().as_str(), cfg.token().as_str()).await?;
+    let repo_scope = args.repositories().unwrap_or(RepoScope::Authored);
+
+    if &RepoScope::Private == &repo_scope {
+        return Err(Error::FeatureNotImplemented);
+    }
+
+    let dashboard = Dashboard::new(cfg.user().as_str(), cfg.token().as_str(), repo_scope).await?;
 
     let table = dashboard.build_dashboard();
 

@@ -1,11 +1,11 @@
 ```console
 $ ghdash -V 
-ghdash 0.1.0
+ghdash 0.1.1
 
 ```
 
 ```console
 $ ghdash --version 
-ghdash 0.1.0
+ghdash 0.1.1
 
 ```

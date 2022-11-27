@@ -4,20 +4,24 @@
 use std::ops::Deref;
 
 use crate::error::Error;
-// use cli_table::{
-//     format::{Border, Justify},
-//     print_stdout, Cell, Style, Table, TableStruct,
-// };
-use octorust::types::Order;
-use octorust::types::PullsListSort;
-use octorust::types::ReposListOrgSort;
-use octorust::types::ReposListUserType;
+use ansi_term::{Colour, Style};
+use clap::ValueEnum;
+use octorust::types::{Order, PullsListSort, ReposListOrgSort, ReposListUserType};
 use octorust::{auth::Credentials, Client};
-use term_grid::Cell;
-use term_grid::Direction;
-use term_grid::Filling;
-use term_grid::Grid;
-use term_grid::GridOptions;
+use term_grid::{Cell, Direction, Filling, Grid, GridOptions};
+
+/// Options for the scope of the repositories listed in the dashboard
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Debug)]
+pub enum RepoScope {
+    /// Public repositories that are original written by the user
+    Authored,
+    /// Public repositories that are forked from other authors
+    Forked,
+    /// All public repositories
+    Public,
+    /// All private repositories
+    Private,
+}
 
 #[derive(Debug, Default)]
 struct Repo {
@@ -50,6 +54,7 @@ pub struct Dashboard {
     user: String,
     token: String,
     repositories: Vec<Repo>,
+    repo_scope: RepoScope,
 }
 
 impl Dashboard {
@@ -57,7 +62,7 @@ impl Dashboard {
     /// Without a user and token to get data from Github the dashboard is meaningless
     /// therefore a new struct without this data is not meaningful
     ///
-    pub async fn new(user: &str, token: &str) -> Result<Dashboard, Error> {
+    pub async fn new(user: &str, token: &str, repo_scope: RepoScope) -> Result<Dashboard, Error> {
         if user.is_empty() {
             return Err(Error::MustHaveUser);
         }
@@ -71,33 +76,77 @@ impl Dashboard {
         let repos = github.repos();
         let pulls = github.pulls();
 
-        let username = user;
-        let type_ = ReposListUserType::Owner;
-        let sort = ReposListOrgSort::FullName;
-        let direction = Order::Asc;
         let repos_list = repos
-            .list_all_for_user(username, type_, sort, direction)
+            .list_all_for_user(
+                user,
+                ReposListUserType::Owner,
+                ReposListOrgSort::FullName,
+                Order::Asc,
+            )
             .await?;
 
         let mut repositories: Vec<Repo> = vec![];
 
         for repo in repos_list {
-            if !repo.fork {
-                let repo_name = repo.name.as_str();
-                let pr_count = pulls
-                    .list_all(
-                        user,
-                        repo_name,
-                        octorust::types::IssuesListState::Open,
-                        "",
-                        "",
-                        PullsListSort::Created,
-                        Order::Asc,
-                    )
-                    .await?
-                    .iter()
-                    .count();
-                repositories.push(Repo::new(Some(String::from(repo_name)), Some(pr_count)));
+            match repo_scope {
+                RepoScope::Authored => {
+                    if !repo.fork {
+                        let repo_name = repo.name.as_str();
+                        let pr_count = pulls
+                            .list_all(
+                                user,
+                                repo_name,
+                                octorust::types::IssuesListState::Open,
+                                "",
+                                "",
+                                PullsListSort::Created,
+                                Order::Asc,
+                            )
+                            .await?
+                            .iter()
+                            .count();
+                        repositories.push(Repo::new(Some(String::from(repo_name)), Some(pr_count)));
+                    }
+                }
+                RepoScope::Forked => {
+                    if repo.fork {
+                        let repo_name = repo.name.as_str();
+                        let pr_count = pulls
+                            .list_all(
+                                user,
+                                repo_name,
+                                octorust::types::IssuesListState::Open,
+                                "",
+                                "",
+                                PullsListSort::Created,
+                                Order::Asc,
+                            )
+                            .await?
+                            .iter()
+                            .count();
+                        repositories.push(Repo::new(Some(String::from(repo_name)), Some(pr_count)));
+                    }
+                }
+                RepoScope::Public => {
+                    let repo_name = repo.name.as_str();
+                    let pr_count = pulls
+                        .list_all(
+                            user,
+                            repo_name,
+                            octorust::types::IssuesListState::Open,
+                            "",
+                            "",
+                            PullsListSort::Created,
+                            Order::Asc,
+                        )
+                        .await?
+                        .iter()
+                        .count();
+                    repositories.push(Repo::new(Some(String::from(repo_name)), Some(pr_count)));
+                }
+                RepoScope::Private => {
+                    unreachable!()
+                }
             }
         }
 
@@ -105,6 +154,7 @@ impl Dashboard {
             user: user.to_string(),
             token: token.to_string(),
             repositories,
+            repo_scope,
         })
     }
 
@@ -122,29 +172,53 @@ impl Dashboard {
 
         for repo in self.repositories.deref() {
             grid.add(Cell::from(repo.name.clone()));
-            grid.add(Cell::from(repo.pr_count.to_string()));
+            let count = repo.pr_count;
+            if 0 < count {
+                grid.add(Cell::from(bold_yellow(count)));
+            } else {
+                grid.add(Cell::from(repo.pr_count.to_string()));
+            }
         }
 
         format!("{}", grid.fit_into_columns(2))
     }
 
-    /// Get the user
+    /// Get the user name for the dashboard
     ///
     pub fn user(&self) -> &str {
         &self.user
     }
 
-    /// Set the user name in the Dashboard struct
+    /// Set the user name for the Dashboard
     ///
     pub fn set_user(&mut self, user: &str) -> &mut Self {
         self.user = user.to_string();
         self
     }
 
-    /// Set the token in the Dashboard
+    /// Get the token for the Dashboard
+    ///
+    pub fn token(&self) -> &str {
+        &self.token
+    }
+
+    /// Set the token for the Dashboard
     ///
     pub fn set_token(&mut self, token: &str) -> &mut Self {
         self.token = token.to_string();
+        self
+    }
+
+    /// Get the repo_scope for the Dashboard
+    ///
+    pub fn repo_scope(&self) -> RepoScope {
+        self.repo_scope.clone()
+    }
+
+    /// Set the repo_scope for the Dashboard
+    ///
+    pub fn set_repo_scope(&mut self, repo_scope: RepoScope) -> &mut Self {
+        self.repo_scope = repo_scope;
         self
     }
 
@@ -157,5 +231,15 @@ impl Dashboard {
 }
 
 fn heading(heading: &str) -> String {
-    format!("{}", ansi_term::Style::new().bold().paint(heading))
+    format!("{}", Style::new().bold().paint(heading))
+}
+
+fn bold_yellow<T: ToString>(text: T) -> String {
+    format!(
+        "{}",
+        Style::new()
+            .bold()
+            .fg(Colour::Fixed(220))
+            .paint(text.to_string())
+    )
 }
