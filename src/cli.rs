@@ -7,6 +7,7 @@
 //!
 
 use clap::Parser;
+use ghdash::RepoScope;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -20,6 +21,9 @@ pub struct GhDashCli {
     /// github personal access token
     #[arg(short, long)]
     token: Option<String>,
+    /// scope for the repositories shown in the dashboard
+    #[arg(value_enum, short, long)]
+    repositories: Option<RepoScope>,
 }
 
 impl GhDashCli {
@@ -33,6 +37,10 @@ impl GhDashCli {
 
     pub fn token(&self) -> Option<String> {
         self.token.clone()
+    }
+
+    pub fn repositories(&self) -> Option<RepoScope> {
+        self.repositories.clone()
     }
 }
 

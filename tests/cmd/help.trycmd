@@ -5,11 +5,29 @@ Dashboard for Github account
 Usage: ghdash [OPTIONS]
 
 Options:
-  -c, --config <CONFIG>  alternate configuration file
-  -u, --user <USER>      github user name
-  -t, --token <TOKEN>    github personal access token
-  -h, --help             Print help information
-  -V, --version          Print version information
+  -c, --config <CONFIG>
+          alternate configuration file
+
+  -u, --user <USER>
+          github user name
+
+  -t, --token <TOKEN>
+          github personal access token
+
+  -r, --repositories <REPOSITORIES>
+          scope for the repositories shown in the dashboard
+
+          Possible values:
+          - authored: Public repositories that are original written by the user
+          - forked:   Public repositories that are forked from other authors
+          - public:   All public repositories
+          - private:  All private repositories
+
+  -h, --help
+          Print help information (use `-h` for a summary)
+
+  -V, --version
+          Print version information
 
 ```
 
@@ -20,10 +38,11 @@ Dashboard for Github account
 Usage: ghdash [OPTIONS]
 
 Options:
-  -c, --config <CONFIG>  alternate configuration file
-  -u, --user <USER>      github user name
-  -t, --token <TOKEN>    github personal access token
-  -h, --help             Print help information
-  -V, --version          Print version information
+  -c, --config <CONFIG>              alternate configuration file
+  -u, --user <USER>                  github user name
+  -t, --token <TOKEN>                github personal access token
+  -r, --repositories <REPOSITORIES>  scope for the repositories shown in the dashboard [possible values: authored, forked, public, private]
+  -h, --help                         Print help information (use `--help` for more detail)
+  -V, --version                      Print version information
 
 ```

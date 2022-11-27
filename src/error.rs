@@ -11,6 +11,9 @@ pub enum Error {
     /// Token name cannot be empty.
     #[error("User name must be specified, cannot be an empty string")]
     MustHaveToken,
+    /// Feature not yet implemented.
+    #[error("Feautre has not been implemented yet.")]
+    FeatureNotImplemented,
     /// Error passed up from confy
     #[error("0:?")]
     Confy(#[from] confy::ConfyError),
