@@ -6,6 +6,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Option to show forked repos
+- Option to show all public repos
+
+### Miscellaneous Tasks
+
+- Release documentation
+
 ## [0.1.1] - 2022-11-23
 
 ### Features

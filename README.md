@@ -12,8 +12,8 @@ Provide a command line application to display a dashboard of statistics about a 
   - [X] For each repo in the repos list
   - [X] List pull requests (pulls::list)
   - [X] Display dashboard with repository name, pull request count
-  - [ ] Show forked repos only
-  - [ ] Show authored and forked repos
+  - [X] Show forked repos only
+  - [X] Show public repos
   - [ ] Show private repos only
   - [ ] Show all repos 
 
