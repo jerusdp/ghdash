@@ -15,7 +15,7 @@
 //! ```toml
 //!
 //! [dependencies]
-//! ghdash = "0.1.0"
+//! ghdash = "0.1.2"
 //!
 //! ```
 //!

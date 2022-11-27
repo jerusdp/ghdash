@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - ReleaseDate
 
+## [0.1.2] - 2022-11-27
+
 ### Features
 
 - Option to show forked repos
@@ -61,7 +63,8 @@ All notable changes to this project will be documented in this file.
 - Update tests for change in cli spec
 
 <!-- next-url -->
-[Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/jerusdp/ghdash/compare/v0.1.1...v0.1.2
 [v0.1.1]: https://github.com/jerusdp/ghdash/compare/v0.1.0...v0.1.1
 [v0.1.0]: https://github.com/jerusdp/ghdash/compare/...v0.1.1
 
