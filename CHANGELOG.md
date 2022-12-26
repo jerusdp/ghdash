@@ -6,6 +6,26 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - ReleaseDate
 
+### Bug Fixes
+
+- Remove redundant use
+
+### Features
+
+- Verbosity, logging, octorust fix
+- Add logging and refacto
+- Logging,  private_repos
+
+### Refactor
+
+- Clippy suggested changes
+- Make pub(crate); remove getters
+- Use Display trait to produce Dashboard
+
+### Testing
+
+- Update tests
+
 ## [0.1.2] - 2022-11-27
 
 ### Features
