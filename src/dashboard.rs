@@ -1,6 +1,7 @@
 //! Dashboard module represents that data presented in the dashboard
 //!
 
+use std::fmt;
 use std::ops::Deref;
 
 use crate::error::Error;
@@ -171,10 +172,12 @@ impl Dashboard {
 
         Ok(self.to_owned())
     }
+}
 
+impl fmt::Display for Dashboard {
     /// Build a table from the dashboard configuration and data
     ///
-    pub fn build_dashboard(&self) -> String {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut grid = Grid::new(GridOptions {
             filling: Filling::Spaces(1),
             direction: Direction::LeftToRight,
@@ -194,7 +197,7 @@ impl Dashboard {
             }
         }
 
-        format!("{}", grid.fit_into_columns(2))
+        write!(f, "{}", grid.fit_into_columns(2))
     }
 }
 

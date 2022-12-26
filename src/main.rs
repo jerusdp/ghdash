@@ -6,7 +6,7 @@ use crate::config::GhConfig;
 use clap::Parser;
 use ghdash::{Dashboard, Error};
 use log::LevelFilter;
-use tracing::{info, Level};
+use tracing::{debug, info, Level};
 use tracing_subscriber::FmtSubscriber;
 
 const APP_NAME: &str = clap::crate_name!();
@@ -37,11 +37,9 @@ async fn main() -> Result<(), Error> {
         .finish()
         .await?;
 
-    info!(dashboard = ?dashboard);
+    debug!(dashboard = ?dashboard);
 
-    let table = dashboard.build_dashboard();
-
-    print!("{}", table);
+    print!("{dashboard}");
 
     Ok(())
 }
