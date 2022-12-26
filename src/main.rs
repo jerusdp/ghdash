@@ -6,7 +6,7 @@ use crate::config::GhConfig;
 use clap::Parser;
 use ghdash::{Dashboard, Error};
 use log::LevelFilter;
-use tracing::{debug, info, Level};
+use tracing::{debug, Level};
 use tracing_subscriber::FmtSubscriber;
 
 const APP_NAME: &str = clap::crate_name!();
