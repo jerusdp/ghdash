@@ -18,7 +18,7 @@ pub enum Error {
     #[error("0:?")]
     Confy(#[from] confy::ConfyError),
     /// Error passed up from anyhow
-    #[error("0:?")]
+    #[error(transparent)]
     Anyhow(#[from] anyhow::Error),
     /// Error passed up from opentelemetry trace
     #[error("0:?")]
