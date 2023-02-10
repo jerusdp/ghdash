@@ -3,6 +3,7 @@
 
 use std::fmt;
 use std::ops::Deref;
+use std::sync::Arc;
 
 use crate::error::Error;
 use ansi_term::{Colour, Style};
@@ -11,7 +12,8 @@ use octorust::pulls::Pulls;
 use octorust::types::{Order, PullsListSort, ReposListOrgSort, ReposListType, Repository};
 use octorust::{auth::Credentials, Client};
 use term_grid::{Cell, Direction, Filling, Grid, GridOptions};
-use tracing::{debug, info, instrument};
+use tokio::task::JoinHandle;
+use tracing::{debug, info, instrument, warn};
 
 /// Options for the scope of the repositories listed in the dashboard
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Default, Debug)]
@@ -101,7 +103,7 @@ impl Dashboard {
         )?;
 
         let repos = github.repos();
-        let pulls = github.pulls();
+        let pulls = Arc::new(github.pulls());
 
         info!("Access secured to github repositories and pull requests.\nGetting the base list of repositories.");
         let mut repos_list = repos
@@ -116,12 +118,16 @@ impl Dashboard {
             )
             .await?;
 
+        info!("Remove un-owned repositories.");
+        repos_list.retain(|repo| owned_by(repo, &self.user));
+
         info!(
             "Check if archived should be retained or removed ({:#?}).",
             self.archived
         );
 
         if !self.archived {
+            info!("Removing archived repos from the list");
             repos_list.retain(|repo| !repo.archived);
         }
 
@@ -137,33 +143,51 @@ impl Dashboard {
             _ => {}
         }
 
-        let mut repositories: Vec<Repo> = vec![];
+        let mut repositories = vec![]; // : Vec<Repo>
+        let mut tasks = vec![];
 
         info!("Building list of repositories ({:#?}).", &repositories);
 
         for repo in repos_list {
-            let repo_name = repo.name.as_str();
-            let mut pr_count = 0;
-            info!(
-                "Checking for counting of {:?} with login {:?} for user {:?}",
-                &repo.name,
-                &repo.owner.clone().unwrap().login,
-                &self.user
-            );
-            if owned_by(&repo, &self.user) {
-                info!("Counting pull requests for {:?}", &repo.name);
-                pr_count += pull_request_count(&pulls, &self.user, repo_name).await?;
-            }
-            repositories.push(Repo {
-                name: String::from(repo_name),
-                pr_count,
+            let t_repo = repo.name.clone();
+            let t_pulls = pulls.clone();
+            let t_user = self.user.clone();
+            info!("Counting pull requests for {:?}", &repo.name);
+            let res: JoinHandle<RepoResult> = tokio::spawn(async move {
+                let pr_count_res =
+                    pull_request_count(&t_pulls, t_user.as_ref(), t_repo.as_ref()).await;
+                RepoResult {
+                    name: t_repo,
+                    pr_count_res,
+                }
             });
+            tasks.push(res);
         }
 
+        for task in tasks {
+            match task.await {
+                Ok(repo_res) => {
+                    let name = repo_res.name;
+                    match repo_res.pr_count_res {
+                        Ok(pr_count) => repositories.push(Repo { name, pr_count }),
+                        Err(e) => warn!(
+                            "Error returned while fetching pull data for {:#?}: {:#?}",
+                            name, e
+                        ),
+                    };
+                }
+                Err(e) => warn!("Join Error on task: {e}"),
+            }
+        }
         self.repositories = repositories;
 
         Ok(self.to_owned())
     }
+}
+
+struct RepoResult {
+    name: String,
+    pr_count_res: Result<usize, Error>,
 }
 
 impl fmt::Display for Dashboard {
@@ -207,9 +231,13 @@ fn bold_yellow<T: ToString>(text: T) -> String {
     )
 }
 
-#[instrument]
+#[instrument(skip(repo) fields(repo.name))]
 fn owned_by(repo: &Repository, user: &str) -> bool {
     if let Some(owner) = repo.owner.clone() {
+        debug!(
+            "checking {} owned by {} for user {}",
+            &repo.name, &owner.login, &user
+        );
         owner.login == user
     } else {
         false
@@ -236,7 +264,7 @@ async fn pull_request_count(pulls: &Pulls, user: &str, repo: &str) -> Result<usi
         Ok(v) => Ok(v.len()),
         Err(e) => {
             debug!(
-                "Error returned seeking list of a all open pull requests:{:?}",
+                "Error returned seeking list of all open pull requests:{:?}",
                 &e
             );
             Err(e.into())
