@@ -5,6 +5,7 @@
         "config",
         "lib",
         "error",
-        "management"
+        "management",
+        "mgmt"
     ]
 }
