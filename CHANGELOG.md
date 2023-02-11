@@ -6,6 +6,22 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Tracing with jaeger at trace level
+- Don't publish (at least no yet :) )
+
+### Miscellaneous Tasks
+
+- Hide any performance related files
+
+### Refactor
+
+- Restrict console to ghdash logs
+- Grooming order and don't log  token
+- Make Anyhow transparent
+- Spawn threads for  data collection
+
 ## [0.1.3] - 2022-12-26
 
 ### Bug Fixes
