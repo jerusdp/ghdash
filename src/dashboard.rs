@@ -1,8 +1,8 @@
 //! Dashboard module represents that data presented in the dashboard
 //!
 
+use std::collections::HashMap;
 use std::fmt;
-use std::ops::Deref;
 use std::sync::Arc;
 
 use crate::error::Error;
@@ -35,6 +35,11 @@ struct Repo {
     pr_count: usize,
 }
 
+struct RepoResult {
+    name: String,
+    pr_count_res: Result<usize, Error>,
+}
+
 /// Struct Representing a Dashboard and key data required to create the dashboard
 ///
 /// ## Fields
@@ -46,7 +51,7 @@ struct Repo {
 pub struct Dashboard {
     user: String,
     token: String,
-    repositories: Vec<Repo>,
+    repositories: HashMap<String, Repo>,
     repo_scope: RepoScope,
     archived: bool,
 }
@@ -143,7 +148,7 @@ impl Dashboard {
             _ => {}
         }
 
-        let mut repositories = vec![]; // : Vec<Repo>
+        let mut repositories = HashMap::new(); // vec![]; // : Vec<Repo>
         let mut tasks = vec![];
 
         info!("Building list of repositories ({:#?}).", &repositories);
@@ -169,7 +174,9 @@ impl Dashboard {
                 Ok(repo_res) => {
                     let name = repo_res.name;
                     match repo_res.pr_count_res {
-                        Ok(pr_count) => repositories.push(Repo { name, pr_count }),
+                        Ok(pr_count) => {
+                            repositories.insert(name.clone(), Repo { name, pr_count });
+                        }
                         Err(e) => warn!(
                             "Error returned while fetching pull data for {:#?}: {:#?}",
                             name, e
@@ -185,11 +192,6 @@ impl Dashboard {
     }
 }
 
-struct RepoResult {
-    name: String,
-    pr_count_res: Result<usize, Error>,
-}
-
 impl fmt::Display for Dashboard {
     /// Build a table from the dashboard configuration and data
     ///
@@ -203,7 +205,7 @@ impl fmt::Display for Dashboard {
         grid.add(Cell::from(heading("Repository        ")));
         grid.add(Cell::from(heading("PR Count")));
 
-        for repo in self.repositories.deref() {
+        for repo in self.repositories.clone().into_values() {
             grid.add(Cell::from(repo.name.clone()));
             let count = repo.pr_count;
             if 0 < count {
