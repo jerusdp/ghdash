@@ -231,7 +231,10 @@ impl fmt::Display for Dashboard {
                     .add_attribute(Attribute::Bold)
                     .set_alignment(CellAlignment::Center)
             } else {
-                Cell::new(repo.pr_count).set_alignment(CellAlignment::Center)
+                Cell::new(repo.pr_count)
+                    .fg(Color::White)
+                    .add_attribute(Attribute::NoBold)
+                    .set_alignment(CellAlignment::Center)
             };
             let issues = if 0 < repo.pr_count {
                 Cell::new(repo.issue_count)
@@ -239,7 +242,10 @@ impl fmt::Display for Dashboard {
                     .add_attribute(Attribute::Bold)
                     .set_alignment(CellAlignment::Center)
             } else {
-                Cell::new(repo.issue_count).set_alignment(CellAlignment::Center)
+                Cell::new(repo.issue_count)
+                    .fg(Color::White)
+                    .add_attribute(Attribute::NoBold)
+                    .set_alignment(CellAlignment::Center)
             };
             table.add_row(vec![repo_name, prs, issues]);
         }
