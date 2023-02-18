@@ -1,19 +1,18 @@
 //! Dashboard module represents that data presented in the dashboard
 //!
 
-use std::collections::HashMap;
-use std::fmt;
+use std::fmt::{self};
 use std::sync::Arc;
 
 use crate::error::Error;
-use ansi_term::{Colour, Style};
 use clap::ValueEnum;
+use comfy_table::presets::NOTHING;
+use comfy_table::{Attribute, Cell, CellAlignment, Color, Table, TableComponent};
 use octorust::issues::Issues;
 use octorust::types::{
     IssuesListSort, IssuesListState, Order, ReposListOrgSort, ReposListType, Repository,
 };
 use octorust::{auth::Credentials, Client};
-use term_grid::{Cell, Direction, Filling, Grid, GridOptions};
 use tokio::task::JoinHandle;
 use tracing::{debug, info, instrument, warn};
 
@@ -54,7 +53,7 @@ struct RepoResult {
 pub struct Dashboard {
     user: String,
     token: String,
-    repositories: HashMap<String, Repo>,
+    repositories: Vec<Repo>,
     repo_scope: RepoScope,
     archived: bool,
 }
@@ -151,7 +150,7 @@ impl Dashboard {
             _ => {}
         }
 
-        let mut repositories = HashMap::new(); // vec![]; // : Vec<Repo>
+        let mut repositories = vec![]; // : Vec<Repo> // HashMap::new();
         let mut tasks = vec![];
 
         info!("Building list of repositories ({:#?}).", &repositories);
@@ -179,14 +178,11 @@ impl Dashboard {
                     match repo_res.count_res {
                         Ok(counts) => {
                             info!("The counts found are: {:?}", &counts);
-                            repositories.insert(
-                                name.clone(),
-                                Repo {
-                                    name,
-                                    pr_count: counts.0,
-                                    issue_count: counts.1,
-                                },
-                            );
+                            repositories.push(Repo {
+                                name,
+                                pr_count: counts.0,
+                                issue_count: counts.1,
+                            });
                         }
                         Err(e) => warn!(
                             "Error returned while fetching pull data for {:#?}: {:#?}",
@@ -208,41 +204,48 @@ impl fmt::Display for Dashboard {
     /// Build a table from the dashboard configuration and data
     ///
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut grid = Grid::new(GridOptions {
-            filling: Filling::Spaces(1),
-            direction: Direction::LeftToRight,
-        });
+        let mut table = Table::new();
+        table
+            .load_preset(NOTHING)
+            .set_style(TableComponent::HeaderLines, '═')
+            .set_style(TableComponent::MiddleHeaderIntersections, '═')
+            .set_style(TableComponent::BottomBorder, '─')
+            .set_style(TableComponent::BottomBorderIntersections, '─')
+            .set_header(vec![
+                Cell::new("Repository")
+                    .add_attribute(Attribute::Bold)
+                    .set_alignment(CellAlignment::Center),
+                Cell::new("PRs")
+                    .add_attribute(Attribute::Bold)
+                    .set_alignment(CellAlignment::Center),
+                Cell::new("Issues")
+                    .add_attribute(Attribute::Bold)
+                    .set_alignment(CellAlignment::Center),
+            ]);
 
-        // Add the headings
-        grid.add(Cell::from(heading("Repository        ")));
-        grid.add(Cell::from(heading("PR Count")));
-
-        for repo in self.repositories.clone().into_values() {
-            grid.add(Cell::from(repo.name.clone()));
-            let count = repo.pr_count;
-            if 0 < count {
-                grid.add(Cell::from(bold_yellow(count)));
+        for repo in self.repositories.clone().into_iter() {
+            let repo_name = Cell::new(repo.name);
+            let prs = if 0 < repo.pr_count {
+                Cell::new(repo.pr_count)
+                    .fg(Color::Yellow)
+                    .add_attribute(Attribute::Bold)
+                    .set_alignment(CellAlignment::Center)
             } else {
-                grid.add(Cell::from(repo.pr_count.to_string()));
-            }
+                Cell::new(repo.pr_count).set_alignment(CellAlignment::Center)
+            };
+            let issues = if 0 < repo.pr_count {
+                Cell::new(repo.issue_count)
+                    .fg(Color::Yellow)
+                    .add_attribute(Attribute::Bold)
+                    .set_alignment(CellAlignment::Center)
+            } else {
+                Cell::new(repo.issue_count).set_alignment(CellAlignment::Center)
+            };
+            table.add_row(vec![repo_name, prs, issues]);
         }
 
-        write!(f, "{}", grid.fit_into_columns(2))
+        writeln!(f, "{table}")
     }
-}
-
-fn heading(heading: &str) -> String {
-    format!("{}", Style::new().bold().paint(heading))
-}
-
-fn bold_yellow<T: ToString>(text: T) -> String {
-    format!(
-        "{}",
-        Style::new()
-            .bold()
-            .fg(Colour::Fixed(220))
-            .paint(text.to_string())
-    )
 }
 
 #[instrument(skip(repo) fields(repo.name))]
