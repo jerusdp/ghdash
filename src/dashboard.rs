@@ -236,7 +236,7 @@ impl fmt::Display for Dashboard {
                     .add_attribute(Attribute::NoBold)
                     .set_alignment(CellAlignment::Center)
             };
-            let issues = if 0 < repo.pr_count {
+            let issues = if 0 < repo.issue_count {
                 Cell::new(repo.issue_count)
                     .fg(Color::Yellow)
                     .add_attribute(Attribute::Bold)
@@ -247,6 +247,7 @@ impl fmt::Display for Dashboard {
                     .add_attribute(Attribute::NoBold)
                     .set_alignment(CellAlignment::Center)
             };
+            debug!("Repo: {repo_name:?}\nPRs: {prs:?}\nIssues: {issues:?}");
             table.add_row(vec![repo_name, prs, issues]);
         }
 
