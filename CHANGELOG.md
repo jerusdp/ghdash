@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - ReleaseDate
 
+### Bug Fixes
+
+- Colour selection for issues wrong
+
 ## [0.1.5] - 2023-02-18
 
 ### Refactor
