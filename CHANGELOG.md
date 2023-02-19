@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - ReleaseDate
 
+## [0.1.6] - 2023-02-19
+
 ### Bug Fixes
 
 - Colour selection for issues wrong
@@ -116,7 +118,8 @@ All notable changes to this project will be documented in this file.
 - Update tests for change in cli spec
 
 <!-- next-url -->
-[Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.5...HEAD
+[Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.6...HEAD
+[0.1.6]: https://github.com/jerusdp/ghdash/compare/v0.1.5...v0.1.6
 [0.1.5]: https://github.com/jerusdp/ghdash/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/jerusdp/ghdash/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/jerusdp/ghdash/compare/v0.1.2...v0.1.3
