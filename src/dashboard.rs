@@ -13,6 +13,7 @@ use octorust::types::{
     IssuesListSort, IssuesListState, Order, ReposListOrgSort, ReposListType, ReposListVisibility,
     Repository,
 };
+use octorust::Response;
 use octorust::{auth::Credentials, Client};
 use tokio::task::JoinHandle;
 use tracing::{debug, info, instrument, warn};
@@ -126,11 +127,7 @@ impl Dashboard {
             )
             .await?;
 
-        if !repos_list.status.is_success() {
-            return Err(Error::HttpErrorCode(repos_list.status.as_u16()));
-        }
-
-        let mut repos_list = repos_list.body;
+        let mut repos_list = extract_list_from_response(repos_list)?;
 
         info!("Remove un-owned repositories.");
         repos_list.retain(|repo| owned_by(repo, &self.user));
@@ -311,7 +308,7 @@ async fn count_issues(
                 return Err(Error::HttpErrorCode(issues_list.status.as_u16()));
             }
 
-            let issues_list = issues_list.body;
+            let issues_list = extract_list_from_response(issues_list)?;
 
             for issue in issues_list {
                 match issue.pull_request {
@@ -329,4 +326,12 @@ async fn count_issues(
             Err(e.into())
         }
     }
+}
+
+fn extract_list_from_response<T>(list: Response<T>) -> Result<T, Error> {
+    if !list.status.is_success() {
+        return Err(Error::HttpErrorCode(list.status.as_u16()));
+    }
+
+    Ok(list.body)
 }
