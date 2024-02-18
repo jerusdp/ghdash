@@ -10,8 +10,7 @@ use comfy_table::presets::NOTHING;
 use comfy_table::{Attribute, Cell, CellAlignment, Color, Table, TableComponent};
 use octorust::issues::Issues;
 use octorust::types::{
-    IssuesListSort, IssuesListState, Order, ReposListOrgSort, ReposListType, ReposListVisibility,
-    Repository,
+    IssuesListSort, IssuesListState, Order, ReposListOrgSort, ReposListType, Repository,
 };
 use octorust::Response;
 use octorust::{auth::Credentials, Client};
@@ -117,9 +116,9 @@ impl Dashboard {
         info!("Access secured to github repositories and pull requests.\nGetting the base list of repositories.");
         let repos_list = repos
             .list_all_for_authenticated_user(
-                ReposListVisibility::All,
+                None,
                 "",
-                list_type,
+                Some(list_type),
                 ReposListOrgSort::FullName,
                 Order::Asc,
                 None,
@@ -228,7 +227,9 @@ impl fmt::Display for Dashboard {
             ]);
 
         for repo in self.repositories.clone().into_iter() {
-            let repo_name = Cell::new(repo.name);
+            let repo_name = Cell::new(repo.name)
+                .add_attribute(Attribute::Bold)
+                .set_alignment(CellAlignment::Left);
             let prs = if 0 < repo.pr_count {
                 Cell::new(repo.pr_count)
                     .fg(Color::Yellow)
@@ -237,7 +238,6 @@ impl fmt::Display for Dashboard {
             } else {
                 Cell::new(repo.pr_count)
                     .fg(Color::White)
-                    .add_attribute(Attribute::NoBold)
                     .set_alignment(CellAlignment::Center)
             };
             let issues = if 0 < repo.issue_count {
@@ -248,7 +248,6 @@ impl fmt::Display for Dashboard {
             } else {
                 Cell::new(repo.issue_count)
                     .fg(Color::White)
-                    .add_attribute(Attribute::NoBold)
                     .set_alignment(CellAlignment::Center)
             };
             debug!("Repo: {repo_name:?}\nPRs: {prs:?}\nIssues: {issues:?}");
