@@ -85,7 +85,7 @@ async fn get_logging(verbosity: log::LevelFilter) -> Result<(), Error> {
         let _ = tracing::subscriber::set_global_default(log_subscriber)
             .map_err(|_| eprintln!("Unable to set global default subscriber!"));
 
-        info!("Initialise logging to console at {verbosity}");
+        info!("Initialised logging to console at {verbosity}");
     }
     Ok(())
 }
