@@ -5,6 +5,8 @@ use std::collections::HashMap;
 
 use crate::cli::GhDashCli;
 use crate::config::GhConfig;
+use bollard::container::ListContainersOptions;
+use bollard::Docker;
 use clap::Parser;
 use ghdash::{Dashboard, Error};
 use opentelemetry::global;
@@ -52,7 +54,7 @@ async fn main() -> Result<(), Error> {
 }
 
 async fn get_logging(verbosity: log::LevelFilter) -> Result<(), Error> {
-    if zipkin_container_running().await {
+    if zipkin_container_running(connect_docker()).await {
         let tracer = init_tracer()?;
         tracing_subscriber::registry()
             .with(tracing_subscriber::EnvFilter::new("TRACE"))
@@ -97,16 +99,22 @@ fn init_tracer() -> Result<Tracer, TraceError> {
         .install_batch(Tokio)
 }
 
-use bollard::container::ListContainersOptions;
-
-async fn zipkin_container_running() -> bool {
-    const TRACER_IMAGE: &str = "openzipkin/zipkin";
-    let docker = bollard::Docker::connect_with_unix(
+fn connect_docker() -> Result<Docker, bollard::errors::Error> {
+    bollard::Docker::connect_with_unix(
         "/home/gorta/.docker/desktop/docker.sock",
         120,
         bollard::API_DEFAULT_VERSION,
     )
-    .unwrap();
+}
+
+async fn zipkin_container_running(docker_result: Result<Docker, bollard::errors::Error>) -> bool {
+    let Ok(docker) = docker_result else {
+        return false;
+    };
+
+    println!("found docker and ready for search");
+
+    const TRACER_IMAGE: &str = "openzipkin/zipkin";
 
     let mut filters = HashMap::new();
     filters.insert(String::from("ancestor"), vec![String::from(TRACER_IMAGE)]);
