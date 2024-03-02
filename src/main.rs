@@ -54,7 +54,7 @@ async fn main() -> Result<(), Error> {
 }
 
 async fn get_logging(verbosity: log::LevelFilter) -> Result<(), Error> {
-    if zipkin_container_running(connect_docker()).await {
+    if zipkin_container_running(connect_docker().await).await {
         let tracer = init_tracer()?;
         tracing_subscriber::registry()
             .with(tracing_subscriber::EnvFilter::new("TRACE"))
@@ -99,20 +99,31 @@ fn init_tracer() -> Result<Tracer, TraceError> {
         .install_batch(Tokio)
 }
 
-fn connect_docker() -> Result<Docker, bollard::errors::Error> {
-    bollard::Docker::connect_with_unix(
+async fn connect_docker() -> Docker {
+    let mut connection = bollard::Docker::connect_with_unix(
         "/home/gorta/.docker/desktop/docker.sock",
         120,
         bollard::API_DEFAULT_VERSION,
     )
+    .unwrap();
+
+    match connection.ping().await {
+        Ok(_) => println!("Connected!"),
+        Err(_) => {
+            connection = bollard::Docker::connect_with_local_defaults().unwrap();
+        }
+    }
+
+    if connection.ping().await.is_ok() {
+        println!("Connected!")
+    };
+    connection
 }
 
-async fn zipkin_container_running(docker_result: Result<Docker, bollard::errors::Error>) -> bool {
-    let Ok(docker) = docker_result else {
-        return false;
-    };
-
-    println!("found docker and ready for search");
+async fn zipkin_container_running(docker: Docker) -> bool {
+    // let Ok(docker) = docker_result else {
+    //     return false;
+    // };
 
     const TRACER_IMAGE: &str = "openzipkin/zipkin";
 
