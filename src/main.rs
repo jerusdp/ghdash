@@ -99,7 +99,12 @@ fn init_tracer() -> Result<Tracer, TraceError> {
         .install_batch(Tokio)
 }
 
-async fn connect_docker() -> Docker {
+enum DockerConnection {
+    Connection(Docker),
+    NoConnection,
+}
+
+async fn connect_docker() -> DockerConnection {
     let mut connection = bollard::Docker::connect_with_unix(
         "/home/gorta/.docker/desktop/docker.sock",
         120,
@@ -117,16 +122,25 @@ async fn connect_docker() -> Docker {
         }
     }
 
-    if docker.ping().await.is_ok() {
-        println!("Connected!")
-    };
-    docker
+    match docker.ping().await {
+        Ok(_) => {
+            println!("Connected!");
+            DockerConnection::Connection(docker)
+        }
+        Err(e) => {
+            println!("Connection error: {:?}", e);
+            DockerConnection::NoConnection
+        }
+    }
 }
 
-async fn zipkin_container_running(docker: Docker) -> bool {
-    // let Ok(docker) = docker_result else {
-    //     return false;
-    // };
+async fn zipkin_container_running(docker: DockerConnection) -> bool {
+    let docker = match docker {
+        DockerConnection::Connection(d) => d,
+        _ => {
+            return false;
+        }
+    };
 
     const TRACER_IMAGE: &str = "openzipkin/zipkin";
 
