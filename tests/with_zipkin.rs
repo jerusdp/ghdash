@@ -11,15 +11,14 @@ use bollard::{
     Docker,
 };
 
-const DOCKER_SOCKET: &str = "/home/gorta/.docker/desktop/docker.sock";
 const TRACER_NAME: &str = "zipkin_tester";
 const TRACER_IMAGE: &str = "openzipkin/zipkin";
 
 #[tokio::test]
 async fn with_zipkin_tests() {
-    let docker =
-        bollard::Docker::connect_with_unix(DOCKER_SOCKET, 120, bollard::API_DEFAULT_VERSION)
-            .unwrap();
+    let ghdash::DockerConnection::Connection(docker) = ghdash::connect_docker().await else {
+        return;
+    };
 
     ensure_container_started(&docker, TRACER_NAME, TRACER_IMAGE).await;
 
