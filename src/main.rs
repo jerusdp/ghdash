@@ -1,11 +1,10 @@
 mod cli;
 mod config;
-mod logging;
 
 use crate::cli::GhDashCli;
 use crate::config::GhConfig;
 use clap::Parser;
-use ghdash::{Dashboard, Error};
+use ghdash::{get_logging, Dashboard, Error};
 
 const APP_NAME: &str = clap::crate_name!();
 
@@ -13,7 +12,7 @@ const APP_NAME: &str = clap::crate_name!();
 async fn main() -> Result<(), Error> {
     let args = GhDashCli::parse();
 
-    logging::get_logging(args.logging.log_level_filter()).await?;
+    get_logging(args.logging.log_level_filter()).await?;
 
     let config_name = args.config;
     let config_name = config_name.as_deref();

@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
+use crate::Error;
 use bollard::container::ListContainersOptions;
 use bollard::Docker;
-use ghdash::Error;
 use opentelemetry::global;
 use opentelemetry::trace::TraceError;
 use opentelemetry_sdk::runtime::Tokio;
@@ -12,6 +12,12 @@ use tracing::{info, span, Level};
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 
+/// Get the logging setup
+///
+/// In the case wheren tracing is available (ZIpkin container running) configure tracing
+/// and logging in line with the verbosity specifeid when the programme was run, otherwise,
+/// enable logging in line with the verbosity specifeid.
+///
 pub async fn get_logging(verbosity: log::LevelFilter) -> Result<(), Error> {
     if zipkin_container_running(connect_docker().await).await {
         let tracer = init_tracer()?;
@@ -58,13 +64,28 @@ fn init_tracer() -> Result<Tracer, TraceError> {
         .install_batch(Tokio)
 }
 
+/// Enum Representing a Docker Connection
+///
+/// ## Variants
+/// - Connection(Docker) - a connection has been configured and verified. Supplied within the tupple.
+/// - NoConnection - No connection has been succesfully created and verified.
+///
 #[derive(Debug)]
-enum DockerConnection {
+pub enum DockerConnection {
+    /// connection is successful and supplied within the variant.
     Connection(Docker),
+    /// No connection has been created and verified.
     NoConnection,
 }
 
-async fn connect_docker() -> DockerConnection {
+/// Connect to docker
+///
+/// The connection is configured either by the default (dev) configuration or using
+/// a default setup. Once created the connection is verified by pinging.
+/// If the ping fails then [NoConnection] is returned else the successful connection is
+/// returned wrapped in the [Connection] variant of the [DockerConnection] enum.
+///
+pub async fn connect_docker() -> DockerConnection {
     let mut connection = bollard::Docker::connect_with_unix(
         "/home/gorta/.docker/desktop/docker.sock",
         120,
