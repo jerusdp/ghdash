@@ -47,6 +47,9 @@ jobs:
     executor: rust-env
     steps:
       - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+          version: 20.10.14
       - run: cargo --version
       - run:
           name: Check formatting for code
