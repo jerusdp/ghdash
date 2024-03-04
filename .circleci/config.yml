@@ -50,6 +50,9 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
           version: default
+      - run:
+          name: Pull down zipkin image
+          command: docker pull openzipkin/zipkin
       - run: cargo --version
       - run:
           name: Check formatting for code

@@ -23,6 +23,7 @@
         "mset",
         "mwith",
         "octorust",
+        "openzipkin",
         "rlinks"
     ]
 }
