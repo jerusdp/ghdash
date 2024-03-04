@@ -72,7 +72,7 @@ async fn connect_docker() -> DockerConnection {
     );
     let mut docker = connection.unwrap();
 
-    let result = match docker.ping().await {
+    match docker.ping().await {
         Ok(_) => DockerConnection::Connection(docker),
         Err(_) => {
             connection = bollard::Docker::connect_with_local_defaults();
@@ -83,9 +83,7 @@ async fn connect_docker() -> DockerConnection {
                 Err(_) => DockerConnection::NoConnection,
             }
         }
-    };
-    println!("connect_docker result {result:?}");
-    result
+    }
 }
 
 async fn zipkin_container_running(docker: DockerConnection) -> bool {
