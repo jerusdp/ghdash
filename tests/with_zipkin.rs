@@ -24,28 +24,30 @@ async fn with_zipkin_tests() {
         return;
     };
 
-    ensure_container_started(&docker, TRACER_NAME, TRACER_IMAGE).await;
+    let started_container = ensure_container_started(&docker, TRACER_NAME, TRACER_IMAGE).await;
 
     trycmd::TestCases::new()
         .case("tests/logging/*.trycmd")
         .insert_var("[MESSAGE]", "tracing and logging")
         .unwrap();
 
-    stop_container(&docker, TRACER_NAME).await;
+    stop_container(&docker, &started_container).await;
 }
 
-async fn ensure_container_started(docker: &Docker, name: &str, image: &str) {
+async fn ensure_container_started(docker: &Docker, name: &str, image: &str) -> String {
     println!("Checking for a container to use, start or create if required");
     match zipkin_container_running(docker).await {
         ContainerState::Stopped(container) => {
             println!("Found a stopped container: {container:?}");
             start_container(docker, &container).await;
+            container
         }
         ContainerState::None => {
             create_container(docker, name, image).await;
             start_container(docker, name).await;
+            name.to_string()
         }
-        ContainerState::Started(_) => {}
+        ContainerState::Started(container) => container,
     }
 }
 
@@ -175,6 +177,9 @@ async fn create_container(docker: &Docker, container: &str, image: &str) {
 }
 
 async fn stop_container(docker: &Docker, name: &str) {
+    let name = name.trim_start_matches('/');
+
+    println!("Stopping the container: {name}");
     let options = Some(StopContainerOptions { t: 30 });
 
     docker
