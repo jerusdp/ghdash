@@ -1,10 +1,10 @@
 mod cli;
 mod config;
 
-use crate::cli::GhDashCli;
+use crate::cli::{Commands, GhDashCli};
 use crate::config::GhConfig;
 use clap::Parser;
-use ghdash::{get_logging, Dashboard, Error};
+use ghdash::{get_logging, Dashboard, DockerConnection, Error};
 
 const APP_NAME: &str = clap::crate_name!();
 
@@ -33,6 +33,38 @@ async fn main() -> Result<(), Error> {
     if let Some(token) = args.token {
         cfg.set_token(token.as_str());
         confy::store(APP_NAME, config_name, cfg.clone())?;
+    }
+
+    match args.command {
+        Commands::List => {
+            let docker_connection = ghdash::connect_docker().await;
+            match docker_connection {
+                DockerConnection::Connection(docker) => {
+                    println!("Got a connection: {:#?}", docker);
+                    let containers = docker
+                        .list_containers(Some(
+                            bollard::container::ListContainersOptions::<String> {
+                                all: true,
+                                // filters,
+                                ..Default::default()
+                            },
+                        ))
+                        .await
+                        .unwrap();
+
+                    println!("List of Containers and Status");
+
+                    for container in containers {
+                        println!(
+                            "-> Name {:?}\tStatus {:?}",
+                            container.names, container.status
+                        );
+                    }
+                    println!();
+                }
+                DockerConnection::NoConnection => println!("No docker connection"),
+            }
+        }
     }
 
     let dashboard = Dashboard::builder(cfg.user().as_str(), cfg.token().as_str())?

@@ -51,9 +51,6 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
           version: default
-      - run:
-          name: Install Docker client
-          command: apk add docker-cli
       - run: cargo --version
       - run:
           name: Check formatting for code
@@ -63,7 +60,7 @@ jobs:
       - run:
           name: Check idiomatic code use with Clippy
           command: "cargo clippy --all --tests --all-features -- -D warnings"
-      - run: docker container ls -all
+      - run: cargo run -- list
       - run:
           name: Test crate with no features specified
           command: "cargo test"
