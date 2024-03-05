@@ -63,7 +63,7 @@ jobs:
       - run: cargo run -- list
       - run:
           name: Test crate with no features specified
-          command: "cargo test"
+          command: "cargo test -- --nocapture"
 
   docs:
     executor: rust-env

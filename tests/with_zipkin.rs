@@ -1,10 +1,14 @@
-use std::collections::HashMap;
+use std::{
+    collections::HashMap,
+    time::{Duration, Instant},
+};
 
 use futures_util::StreamExt;
 
 use bollard::{
     container::{
-        CreateContainerOptions, StartContainerOptions, StopContainerOptions, WaitContainerOptions,
+        CreateContainerOptions, ListContainersOptions, StartContainerOptions, StopContainerOptions,
+        WaitContainerOptions,
     },
     models::PortBinding,
     secret::HostConfig,
@@ -31,13 +35,72 @@ async fn with_zipkin_tests() {
 }
 
 async fn ensure_container_started(docker: &Docker, name: &str, image: &str) {
-    if !start_container(docker, name).await {
-        create_container(docker, name, image).await;
-        start_container(docker, name).await;
+    println!("Checking for a container to use, start or create if required");
+    match zipkin_container_running(docker).await {
+        ContainerState::Stopped(container) => {
+            println!("Found a stopped container: {container:?}");
+            start_container(docker, &container).await;
+        }
+        ContainerState::None => {
+            create_container(docker, name, image).await;
+            start_container(docker, name).await;
+        }
+        ContainerState::Started(_) => {}
+    }
+}
+
+enum ContainerState {
+    Stopped(String),
+    Started(String),
+    None,
+}
+
+async fn zipkin_container_running(docker: &Docker) -> ContainerState {
+    const TRACER_IMAGE: &str = "openzipkin/zipkin";
+    println!("Checking for running container");
+    let mut filters = HashMap::new();
+    filters.insert(String::from("ancestor"), vec![String::from(TRACER_IMAGE)]);
+    filters.insert(String::from("status"), vec![String::from("running")]);
+
+    let containers = docker
+        .list_containers(Some(ListContainersOptions::<String> {
+            all: true,
+            filters,
+            ..Default::default()
+        }))
+        .await
+        .unwrap();
+
+    if !containers.is_empty() {
+        println!("Found a running container: {:?}", containers);
+        ContainerState::Started(containers[0].names.as_ref().unwrap()[0].clone())
+    } else {
+        let mut filters = HashMap::new();
+        filters.insert(String::from("ancestor"), vec![String::from(TRACER_IMAGE)]);
+
+        let stopped_containers = docker
+            .list_containers(Some(ListContainersOptions::<String> {
+                all: true,
+                filters,
+                ..Default::default()
+            }))
+            .await
+            .unwrap();
+        if !stopped_containers.is_empty() {
+            println!("Found a stopped container: {stopped_containers:?}");
+            ContainerState::Stopped(stopped_containers[0].names.as_ref().unwrap()[0].clone())
+        } else {
+            println!("Found no containers at all.");
+            ContainerState::None
+        }
     }
 }
 
 async fn start_container(docker: &Docker, name: &str) -> bool {
+    let name = name.trim_start_matches('/');
+
+    println!("Starting the container: {name}");
+
     match docker
         .start_container(
             name,
@@ -57,11 +120,23 @@ async fn start_container(docker: &Docker, name: &str) -> bool {
         },
     };
 
-    while reqwest::get("http://localhost:9411/api/v2/services")
-        .await
-        .is_err()
-    {}
-    true
+    let timeout_duration = Duration::from_secs(30); // Timeout duration in seconds
+
+    let start_time = Instant::now();
+
+    let mut not_elapsed = true;
+    let mut error_response = true;
+
+    while not_elapsed && error_response {
+        not_elapsed = start_time.elapsed() < timeout_duration;
+        error_response = reqwest::get("http://localhost:9411/api/v2/services")
+            .await
+            .is_err();
+    }
+
+    println!("Elapsed time: {:?}", start_time.elapsed());
+
+    not_elapsed
 }
 
 async fn create_container(docker: &Docker, container: &str, image: &str) {
