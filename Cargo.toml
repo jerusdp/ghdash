@@ -33,7 +33,7 @@ bollard = "0.16.0"
 clap = { version = "4.5.1", features = ["derive", "cargo"] }
 clap-verbosity-flag = "2.2.0"
 comfy-table = "7.1.0"
-confy = "0.6.0"
+confy = "0.6.1"
 log = "0.4.21"
 octorust = "0.7.0"
 opentelemetry = "0.21.0"
