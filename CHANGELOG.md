@@ -2,9 +2,7 @@
 
 All notable changes to this project are documented in this file.
 
-<!-- next-header -->
-
-## [Unreleased] - ReleaseDate
+## [Unreleased]
 
 ## [0.1.7] - 2024-03-07
 
@@ -240,7 +238,6 @@ All notable changes to this project are documented in this file.
 - Testing for cli options
 - Update tests for change in cli spec
 
-<!-- next-url -->
 [Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.7...HEAD
 [0.1.7]: https://github.com/jerusdp/ghdash/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/jerusdp/ghdash/compare/v0.1.5...v0.1.6
