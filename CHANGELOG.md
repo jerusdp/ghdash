@@ -6,7 +6,7 @@ All notable changes to this project are documented in this file.
 
 ## [0.1.7] - 2024-03-07
 
-### Bug Fixes
+### Fixed
 
 - Update rust crate anyhow to 1.0.75
 - Update rust crate log to 0.4.20
@@ -59,12 +59,12 @@ All notable changes to this project are documented in this file.
 - Update rust crate clap to 4.5.2
 - Update rust crate opentelemetry to 0.22.0
 
-### Documentation
+### Changed
 
 - Create public readme to jerus-org standards
 - Updated documentation for clarity and structure
 
-### Features
+### Added
 
 - Add octorust client setup error to the errors to allow use of '?'
 - Only enable tracing if zipkin container is running
@@ -72,7 +72,7 @@ All notable changes to this project are documented in this file.
 - Added fallback to default connection on failure in main
 - Get user and token config values from the env
 
-### Miscellaneous Tasks
+### Changed
 
 - Update rust crate trycmd to 0.14.19
 - Update rust crate trycmd to 0.14.20
@@ -94,7 +94,7 @@ All notable changes to this project are documented in this file.
 - Clean-up and hide the list command
 - Updated all opentelemetry crates
 
-### Refactor
+### Changed
 
 - Extract html response to helper function
 - Replaced jaeger with zipkin as tracing target
@@ -105,7 +105,7 @@ All notable changes to this project are documented in this file.
 - Moved logging module to lib and publish docker connection
 - Renamed logging module as log module
 
-### Testing
+### Changed
 
 - Updated test result expectations
 - Added test for run of ghdash without any configuration
@@ -114,7 +114,7 @@ All notable changes to this project are documented in this file.
 - Added log module to ghdash logging text as now part of a module.
 - Removed table content from dashboard
 
-### Ci
+### Changed
 
 - Circle CI testing
 - Align MSRV with that required for clap
@@ -129,13 +129,13 @@ All notable changes to this project are documented in this file.
 
 ## [0.1.6] - 2023-02-19
 
-### Bug Fixes
+### Fixed
 
 - Colour selection for issues wrong
 
 ## [0.1.5] - 2023-02-18
 
-### Refactor
+### Changed
 
 - Use HashMap instead of Vec
 - Use HashMap instead of Vec
@@ -144,16 +144,16 @@ All notable changes to this project are documented in this file.
 
 ## [0.1.4] - 2023-02-11
 
-### Features
+### Added
 
 - Tracing with jaeger at trace level
 - Don't publish (at least no yet 😄 )
 
-### Miscellaneous Tasks
+### Changed
 
 - Hide any performance related files
 
-### Refactor
+### Changed
 
 - Restrict console to ghdash logs
 - Grooming order and don't log  token
@@ -162,59 +162,59 @@ All notable changes to this project are documented in this file.
 
 ## [0.1.3] - 2022-12-26
 
-### Bug Fixes
+### Fixed
 
 - Remove redundant use
 
-### Features
+### Added
 
 - Verbosity, logging, octorust fix
 - Add logging and refactor
 - Logging,  private_repos
 
-### Refactor
+### Changed
 
 - Clippy suggested changes
 - Make pub(crate); remove getters
 - Use Display trait to produce Dashboard
 
-### Testing
+### Changed
 
 - Update tests
 
 ## [0.1.2] - 2022-11-27
 
-### Features
+### Added
 
 - Option to show forked repos
 - Option to show all public repos
 
-### Miscellaneous Tasks
+### Changed
 
 - Release documentation
 
 ## [0.1.1] - 2022-11-23
 
-### Features
+### Added
 
 - Add pr_count to dashboard
 
-### Miscellaneous Tasks
+### Changed
 
 - Exclude coverage reports
 
-### Testing
+### Changed
 
 - Update tests to include user option
 
 ## [0.1.0] - 2022-11-23
 
-### Documentation
+### Changed
 
 - Documentation and config option
 - Update progress on features in Readme
 
-### Features
+### Changed
 
 - Basic clap application
 - Support library
@@ -229,11 +229,11 @@ All notable changes to this project are documented in this file.
 - Extract authored repository list for dashboard
 - Print list of public repos authored by the user in a grid
 
-### Refactor
+### Changed
 
 - Separate clap cli configuration
 
-### Testing
+### Changed
 
 - Testing for cli options
 - Update tests for change in cli spec
