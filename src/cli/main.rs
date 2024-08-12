@@ -68,9 +68,9 @@ async fn main() -> Result<(), Error> {
             }
         }
         None => {
-            let dashboard = Dashboard::builder(cfg.user().as_str(), cfg.token().as_str())?
+            let dashboard = Dashboard::new(cfg.user().as_str(), cfg.token().as_str())?
                 .set_repo_scope(args.repositories.unwrap_or_default())
-                .finish()
+                .generate()
                 .await?;
 
             print!("{dashboard}");
