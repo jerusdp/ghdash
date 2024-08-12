@@ -61,7 +61,7 @@ impl Dashboard {
     /// therefore a new struct without this data is not meaningful
     ///
     #[instrument(skip(token))]
-    pub fn builder(user: &str, token: &str) -> Result<Self, Error> {
+    pub fn new(user: &str, token: &str) -> Result<Self, Error> {
         if user.is_empty() {
             return Err(Error::MustHaveUser);
         }
@@ -91,7 +91,7 @@ impl Dashboard {
     /// Gather the data for the report from Github
     ///
     #[instrument(name = "Extract_dashboard_data", skip(self), fields(self.user = %self.user, self.repo_scope = ?self.repo_scope))]
-    pub async fn finish(&mut self) -> Result<Self, Error> {
+    pub async fn generate(&mut self) -> Result<Self, Error> {
         info!("Finishing the dashboard configuration build.");
         let list_type = match self.repo_scope {
             RepoScope::Authored => ReposListType::Public,
