@@ -28,10 +28,12 @@
 //! ```
 //!
 
+mod config;
 mod dashboard;
 mod error;
 mod log;
 
+pub use config::GhConfig;
 pub use dashboard::Dashboard;
 pub use dashboard::RepoScope;
 pub use error::Error;
