@@ -7,7 +7,7 @@ use crate::error::Error;
 use clap::ValueEnum;
 use comfy_table::presets::NOTHING;
 use comfy_table::{Attribute, Cell, CellAlignment, Color, Table, TableComponent};
-use octocrate::{APIConfig, GitHubAPI, Issue, PersonalAccessToken, Repository};
+use octocrate::{APIConfig, AppAuthorization, GitHubAPI, Issue, PersonalAccessToken, Repository};
 use tokio::task::JoinHandle;
 use tracing::{debug, info, instrument, warn};
 
@@ -76,6 +76,57 @@ impl Dashboard {
         })
     }
 
+    /// Create an GitHub API client to make a dashboard using a  personal accesses token
+    ///
+    #[instrument(skip(private_key))]
+    pub async fn new_with_github_app(
+        user: &str,
+        app_id: &str,
+        private_key: &str,
+    ) -> Result<Self, Error> {
+        if user.is_empty() {
+            return Err(Error::MustHaveUser);
+        }
+
+        if private_key.is_empty() {
+            return Err(Error::MustHaveToken);
+        }
+
+        // Create a Github App authorization.
+        let app_authorization = AppAuthorization::new(app_id, private_key);
+
+        // Use Github App authorization to create an API configuration
+        let config = APIConfig::with_token(app_authorization).shared();
+
+        let api = GitHubAPI::new(&config);
+
+        println!("user: {user:?}");
+        // Get the installation for a repoistory.
+        let installation = api.apps.get_user_installation(user).send().await.unwrap();
+
+        // Get the Installation Acccess Token for this Installation
+        let installation_token = api
+            .apps
+            .create_installation_access_token(installation.id)
+            .send()
+            .await
+            .unwrap();
+
+        let config = APIConfig::with_token(installation_token).shared();
+
+        let api = GitHubAPI::new(&config);
+
+        info!("Ready to build a dashboard.");
+
+        Ok(Dashboard {
+            api,
+            user: user.to_string(),
+            repositories: Vec::new(),
+            repo_scope: RepoScope::default(),
+            archived: false,
+        })
+    }
+
     /// Set the repo_scope for the Dashboard
     ///
     #[instrument(skip(self), fields(self.user = %self.user, self.repo_scope = ?self.repo_scope))]
@@ -95,7 +146,8 @@ impl Dashboard {
         let mut repos_list = self
             .api
             .repos
-            .list_for_authenticated_user()
+            // .list_for_authenticated_user()
+            .list_for_user(&self.user)
             .send()
             .await
             .unwrap();
@@ -123,7 +175,7 @@ impl Dashboard {
         // let mut repos_list = extract_list_from_response(repos_list)?;
 
         info!("Remove un-owned repositories.");
-        repos_list.retain(|repo| owned_by(repo, &self.user));
+        repos_list.retain(|repo| repo.owner.login == self.user);
 
         info!(
             "Check if archived should be retained or removed ({:#?}).",
@@ -132,7 +184,13 @@ impl Dashboard {
 
         if !self.archived {
             info!("Removing archived repos from the list");
-            repos_list.retain(|repo| !repo.archived);
+            repos_list.retain(|repo| {
+                if let Some(archived) = repo.archived {
+                    !archived
+                } else {
+                    true
+                }
+            });
         }
 
         match self.repo_scope {

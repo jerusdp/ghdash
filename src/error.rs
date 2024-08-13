@@ -29,6 +29,9 @@ pub enum Error {
     /// Error passed from octocrate
     #[error("0:?")]
     OctocrateError(#[from] octocrate::Error),
+    /// Error passed from env
+    #[error("0:?")]
+    EnvError(#[from] std::env::VarError),
     /// Http Error Code
     #[error("0:?")]
     HttpErrorCode(u16),
