@@ -8,6 +8,7 @@ All notable changes to this project are documented in this file.
 
 - Prepare for github app integration with second binary(pr [#127])
 - add GitHub API integration with octocrate(pr [#128])
+- add AuthSource enum for authentication source and refactor(pr [#136])
 
 ### Changed
 
@@ -284,6 +285,7 @@ All notable changes to this project are documented in this file.
 [#133]: https://github.com/jerusdp/ghdash/pull/133
 [#134]: https://github.com/jerusdp/ghdash/pull/134
 [#135]: https://github.com/jerusdp/ghdash/pull/135
+[#136]: https://github.com/jerusdp/ghdash/pull/136
 [Unreleased]: https://github.com/jerusdp/ghdash/compare/0.1.7...HEAD
 [0.1.7]: https://github.com/jerusdp/ghdash/compare/0.1.6...0.1.7
 [0.1.6]: https://github.com/jerusdp/ghdash/compare/0.1.5...0.1.6
