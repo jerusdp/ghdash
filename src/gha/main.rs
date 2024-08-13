@@ -1,49 +1,23 @@
 use std::env;
 
-use base64::{engine::general_purpose::STANDARD, Engine};
-use octocrate::{APIConfig, AppAuthorization, GitHubAPI};
+use ghdash::{Dashboard, Error};
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Error> {
     println!("Hello, world!");
-    let app_id = env::var("GHDASH_GH_APP_ID").unwrap();
-    // let app_id = app_id_str.parse::<i64>().unwrap();
+    let app_id = env::var("GHDASH_GH_APP_ID")?;
 
-    // let app_installation_id_str = env::var("GHDASH_GH_APP_INSTALLATION_ID").unwrap();
-    // let app_installation_id = app_installation_id_str.parse::<i64>().unwrap();
+    let user = env::var("GHDASH_USER")?;
 
-    let encoded_private_key = std::env::var("GHDASH_GH_APP_PRIVATE_KEY").unwrap();
-    let private_key = STANDARD.decode(encoded_private_key).unwrap();
-    let private_key = String::from_utf8(private_key).unwrap();
+    let private_key = std::env::var("GHDASH_GH_APP_PRIVATE_KEY")?;
+    println!("private key: {private_key}");
 
-    // Create a Github App authorization.
-    let app_authorization = AppAuthorization::new(app_id, private_key);
+    let mut dashboard =
+        Dashboard::new_with_github_app(user.as_str(), app_id.as_str(), private_key.as_str())
+            .await?;
+    dashboard.generate().await?;
 
-    // Use Github App authorization to create an API configuration
-    let config = APIConfig::with_token(app_authorization).shared();
+    print!("{dashboard}");
 
-    let api = GitHubAPI::new(&config);
-
-    // Get the installation for a repoistory.
-    let installation = api
-        .apps
-        .get_repo_installation("jerusdp", "ghdash")
-        .send()
-        .await
-        .unwrap();
-
-    // Get the Installation Acccess Token for this Installation
-    let installation_token = api
-        .apps
-        .create_installation_access_token(installation.id)
-        .send()
-        .await
-        .unwrap();
-
-    // Use the Installation Access Token to create a new API configuration
-    let config = APIConfig::with_token(installation_token).shared();
-
-    let api = GitHubAPI::new(&config);
-
-    let _repository = api.repos.get("jerusdp", "ghdash").send().await.unwrap();
+    Ok(())
 }
