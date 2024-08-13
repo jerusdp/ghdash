@@ -1,5 +1,5 @@
 use clap::Parser;
-use ghdash::{get_logging, Dashboard, DockerConnection, Error, GhConfig};
+use ghdash::{get_logging, AuthSource, Dashboard, DockerConnection, Error, GhConfig};
 use ghdash::{Cli, Commands};
 
 const APP_NAME: &str = clap::crate_name!();
@@ -68,10 +68,11 @@ async fn main() -> Result<(), Error> {
             }
         }
         None => {
-            let dashboard = Dashboard::new(cfg.user().as_str(), cfg.token().as_str())?
-                .set_repo_scope(args.repositories.unwrap_or_default())
-                .generate()
-                .await?;
+            let dashboard =
+                Dashboard::new(cfg.user().as_str(), cfg.token().as_str(), AuthSource::Pat)?
+                    .set_repo_scope(args.repositories.unwrap_or_default())
+                    .generate()
+                    .await?;
 
             print!("{dashboard}");
         }

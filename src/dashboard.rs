@@ -37,12 +37,20 @@ struct RepoResult {
     count_res: Result<(usize, usize), Error>,
 }
 
+/// Source of authentication
+#[derive(Debug, Clone)]
+pub enum AuthSource {
+    /// Personal Access Token
+    Pat,
+}
+
 /// Struct Representing a Dashboard and key data required to create the dashboard
 ///
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub struct Dashboard {
     user: String,
     token: String,
+    auth_source: AuthSource,
     repositories: Vec<Repo>,
     repo_scope: RepoScope,
     archived: bool,
@@ -55,7 +63,7 @@ impl Dashboard {
     /// therefore a new struct without this data is not meaningful
     ///
     #[instrument(skip(token))]
-    pub fn new(user: &str, token: &str) -> Result<Self, Error> {
+    pub fn new(user: &str, token: &str, auth_source: AuthSource) -> Result<Self, Error> {
         if user.is_empty() {
             return Err(Error::MustHaveUser);
         }
@@ -69,7 +77,10 @@ impl Dashboard {
         Ok(Dashboard {
             user: user.to_string(),
             token: token.to_string(),
-            ..Default::default()
+            auth_source,
+            repositories: Vec::new(),
+            repo_scope: RepoScope::default(),
+            archived: false,
         })
     }
 
@@ -88,7 +99,9 @@ impl Dashboard {
     pub async fn generate(&mut self) -> Result<Self, Error> {
         info!("Finishing the dashboard configuration build.");
 
-        let token = PersonalAccessToken::new(self.token.clone());
+        let token = match self.auth_source {
+            AuthSource::Pat => PersonalAccessToken::new(self.token.clone()),
+        };
 
         let config = APIConfig::with_token(token).shared();
 
