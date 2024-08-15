@@ -25,6 +25,7 @@ All notable changes to this project are documented in this file.
 - chore-clean-up after adding GitHub App authorisation(pr [#141])
 - ci-add bot-check context to make_release workflow(pr [#142])
 - ci-add pcu-app context and install_from_github, pcu_verbosity parameters to workflows(pr [#143])
+- ci-add publish parameter with false value(pr [#144])
 
 ### Fixed
 
@@ -300,12 +301,13 @@ All notable changes to this project are documented in this file.
 [#141]: https://github.com/jerusdp/ghdash/pull/141
 [#142]: https://github.com/jerusdp/ghdash/pull/142
 [#143]: https://github.com/jerusdp/ghdash/pull/143
-[Unreleased]: https://github.com/jerusdp/ghdash/compare/0.1.7...HEAD
-[0.1.7]: https://github.com/jerusdp/ghdash/compare/0.1.6...0.1.7
-[0.1.6]: https://github.com/jerusdp/ghdash/compare/0.1.5...0.1.6
-[0.1.5]: https://github.com/jerusdp/ghdash/compare/0.1.4...0.1.5
-[0.1.4]: https://github.com/jerusdp/ghdash/compare/0.1.3...0.1.4
-[0.1.3]: https://github.com/jerusdp/ghdash/compare/0.1.2...0.1.3
-[0.1.2]: https://github.com/jerusdp/ghdash/compare/0.1.1...0.1.2
-[0.1.1]: https://github.com/jerusdp/ghdash/compare/0.1.0...0.1.1
-[0.1.0]: https://github.com/jerusdp/ghdash/releases/tag/0.1.0
+[#144]: https://github.com/jerusdp/ghdash/pull/144
+[Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.7...HEAD
+[0.1.7]: https://github.com/jerusdp/ghdash/compare/v0.1.6...v0.1.7
+[0.1.6]: https://github.com/jerusdp/ghdash/compare/v0.1.5...v0.1.6
+[0.1.5]: https://github.com/jerusdp/ghdash/compare/v0.1.4...v0.1.5
+[0.1.4]: https://github.com/jerusdp/ghdash/compare/v0.1.3...v0.1.4
+[0.1.3]: https://github.com/jerusdp/ghdash/compare/v0.1.2...v0.1.3
+[0.1.2]: https://github.com/jerusdp/ghdash/compare/v0.1.1...v0.1.2
+[0.1.1]: https://github.com/jerusdp/ghdash/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/jerusdp/ghdash/releases/tag/v0.1.0
