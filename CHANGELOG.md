@@ -23,6 +23,7 @@ All notable changes to this project are documented in this file.
 - refactor-replace octorust library with octocrate for GitHub API calls(pr [#134])
 - refactor-remove AuthSource enum and refactor Dashboard struct with pat new(pr [#137])
 - chore-clean-up after adding GitHub App authorisation(pr [#141])
+- ci-add bot-check context to make_release workflow(pr [#142])
 
 ### Fixed
 
@@ -296,6 +297,7 @@ All notable changes to this project are documented in this file.
 [#140]: https://github.com/jerusdp/ghdash/pull/140
 [#139]: https://github.com/jerusdp/ghdash/pull/139
 [#141]: https://github.com/jerusdp/ghdash/pull/141
+[#142]: https://github.com/jerusdp/ghdash/pull/142
 [Unreleased]: https://github.com/jerusdp/ghdash/compare/0.1.7...HEAD
 [0.1.7]: https://github.com/jerusdp/ghdash/compare/0.1.6...0.1.7
 [0.1.6]: https://github.com/jerusdp/ghdash/compare/0.1.5...0.1.6
