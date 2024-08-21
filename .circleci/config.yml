@@ -105,4 +105,3 @@ workflows:
           pcu_verbosity: "-vvvv"
           pcu_push: true
           update_pcu: true
-          pcu_commit_message: "Release v${SEMVER}"
