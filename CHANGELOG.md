@@ -30,6 +30,7 @@ All notable changes to this project are documented in this file.
 - ci-upgrade jerusdp/circleci-toolkit from 1.1.0 to 1.2.0(pr [#146])
 - ci-enable pcu_push in workflows configuration(pr [#147])
 - ci-update toolkit version from 1.2.0 to 1.2.1(pr [#148])
+- ci-add update_pcu and pcu_commit_message options to workflows configuration(pr [#149])
 
 ### Fixed
 
@@ -310,6 +311,7 @@ All notable changes to this project are documented in this file.
 [#146]: https://github.com/jerusdp/ghdash/pull/146
 [#147]: https://github.com/jerusdp/ghdash/pull/147
 [#148]: https://github.com/jerusdp/ghdash/pull/148
+[#149]: https://github.com/jerusdp/ghdash/pull/149
 [Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.7...HEAD
 [0.1.7]: https://github.com/jerusdp/ghdash/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/jerusdp/ghdash/compare/v0.1.5...v0.1.6
