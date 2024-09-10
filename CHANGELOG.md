@@ -47,6 +47,7 @@ All notable changes to this project are documented in this file.
 - deps: update rust crate bollard to 0.17.1(pr [#159])
 - deps: update rust crate clap to 4.5.17(pr [#160])
 - deps: update rust crate reqwest to 0.12.7(pr [#161])
+- deps: update rust crate trycmd to 0.15.7(pr [#162])
 
 ### Security
 
@@ -336,6 +337,7 @@ All notable changes to this project are documented in this file.
 [#159]: https://github.com/jerusdp/ghdash/pull/159
 [#160]: https://github.com/jerusdp/ghdash/pull/160
 [#161]: https://github.com/jerusdp/ghdash/pull/161
+[#162]: https://github.com/jerusdp/ghdash/pull/162
 [Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.7...HEAD
 [0.1.7]: https://github.com/jerusdp/ghdash/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/jerusdp/ghdash/compare/v0.1.5...v0.1.6
