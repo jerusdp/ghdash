@@ -64,7 +64,8 @@
       "matchPackagePatterns": [
         "jerusdp/circleci-toolkit"
       ],
-      "enabled": false
+      "sourceUrl": "https://github.com/jerus-org/circleci-toolkit",
+      "enabled": true
     }
   ],
   "regexManagers": [

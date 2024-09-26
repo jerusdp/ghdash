@@ -37,6 +37,7 @@ All notable changes to this project are documented in this file.
 - ci-upgrade jerusdp/circleci-toolkit orb from 1.4.0 to 1.4.1(pr [#153])
 - chore-remove unnecessary comments and assign @jerusdp as default code owner(pr [#154])
 - ci-update circleci-toolkit version from 1.4.1 to 1.4.2(pr [#155])
+- chore-update CircleCI toolkit version and enable renovate for toolkit(pr [#169])
 
 ### Fixed
 
@@ -348,6 +349,7 @@ All notable changes to this project are documented in this file.
 [#166]: https://github.com/jerusdp/ghdash/pull/166
 [#167]: https://github.com/jerusdp/ghdash/pull/167
 [#168]: https://github.com/jerusdp/ghdash/pull/168
+[#169]: https://github.com/jerusdp/ghdash/pull/169
 [Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.7...HEAD
 [0.1.7]: https://github.com/jerusdp/ghdash/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/jerusdp/ghdash/compare/v0.1.5...v0.1.6
