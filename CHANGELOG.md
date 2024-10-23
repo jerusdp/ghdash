@@ -63,6 +63,7 @@ All notable changes to this project are documented in this file.
 - deps: update serde packages to 1.0.211(pr [#177])
 - deps: update rust crate tokio to 1.41.0(pr [#178])
 - deps: update rust crate anyhow to 1.0.91(pr [#179])
+- deps: update serde packages to 1.0.213(pr [#181])
 
 ### Security
 
@@ -368,6 +369,7 @@ All notable changes to this project are documented in this file.
 [#177]: https://github.com/jerusdp/ghdash/pull/177
 [#178]: https://github.com/jerusdp/ghdash/pull/178
 [#179]: https://github.com/jerusdp/ghdash/pull/179
+[#181]: https://github.com/jerusdp/ghdash/pull/181
 [Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.7...HEAD
 [0.1.7]: https://github.com/jerusdp/ghdash/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/jerusdp/ghdash/compare/v0.1.5...v0.1.6
