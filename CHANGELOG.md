@@ -77,6 +77,7 @@ All notable changes to this project are documented in this file.
 - deps: update rust crate thiserror to v2(pr [#190])
 - deps: update rust crate thiserror to 2.0.1(pr [#192])
 - deps: update rust crate thiserror to 2.0.2(pr [#193])
+- deps: update rust crate thiserror to 2.0.3(pr [#194])
 
 ### Security
 
@@ -396,6 +397,7 @@ All notable changes to this project are documented in this file.
 [#190]: https://github.com/jerusdp/ghdash/pull/190
 [#192]: https://github.com/jerusdp/ghdash/pull/192
 [#193]: https://github.com/jerusdp/ghdash/pull/193
+[#194]: https://github.com/jerusdp/ghdash/pull/194
 [Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.7...HEAD
 [0.1.7]: https://github.com/jerusdp/ghdash/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/jerusdp/ghdash/compare/v0.1.5...v0.1.6
