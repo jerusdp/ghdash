@@ -113,6 +113,7 @@ All notable changes to this project are documented in this file.
 - Dependencies: update rust crate tokio to 1.39.2(pr [#126])
 - Dependencies: update serde packages to 1.0.207(pr [#140])
 - Dependencies: update rust crate clap to 4.5.15(pr [#139])
+- Dependencies: bump rustls from 0.23.16 to 0.23.18 in the cargo group across 1 directory(pr [#205])
 
 ## [0.1.7] - 2024-03-07
 
@@ -416,6 +417,7 @@ All notable changes to this project are documented in this file.
 [#202]: https://github.com/jerusdp/ghdash/pull/202
 [#203]: https://github.com/jerusdp/ghdash/pull/203
 [#204]: https://github.com/jerusdp/ghdash/pull/204
+[#205]: https://github.com/jerusdp/ghdash/pull/205
 [Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.7...HEAD
 [0.1.7]: https://github.com/jerusdp/ghdash/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/jerusdp/ghdash/compare/v0.1.5...v0.1.6
