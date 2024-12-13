@@ -95,6 +95,7 @@ All notable changes to this project are documented in this file.
 - deps: update rust crate thiserror to 2.0.4(pr [#211])
 - deps: update rust crate tracing-subscriber to 0.3.19(pr [#212])
 - deps: update rust crate thiserror to 2.0.6(pr [#213])
+- deps: update serde packages to 1.0.216(pr [#214])
 
 ### Security
 
@@ -434,6 +435,7 @@ All notable changes to this project are documented in this file.
 [#211]: https://github.com/jerusdp/ghdash/pull/211
 [#212]: https://github.com/jerusdp/ghdash/pull/212
 [#213]: https://github.com/jerusdp/ghdash/pull/213
+[#214]: https://github.com/jerusdp/ghdash/pull/214
 [Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.7...HEAD
 [0.1.7]: https://github.com/jerusdp/ghdash/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/jerusdp/ghdash/compare/v0.1.5...v0.1.6
