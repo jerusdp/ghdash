@@ -98,6 +98,7 @@ All notable changes to this project are documented in this file.
 - deps: update serde packages to 1.0.216(pr [#214])
 - deps: update rust crate tokio to 1.42.0(pr [#215])
 - deps: update rust crate clap-verbosity-flag to 3.0.2(pr [#216])
+- deps: update rust crate thiserror to 2.0.8(pr [#217])
 
 ### Security
 
@@ -440,6 +441,7 @@ All notable changes to this project are documented in this file.
 [#214]: https://github.com/jerusdp/ghdash/pull/214
 [#215]: https://github.com/jerusdp/ghdash/pull/215
 [#216]: https://github.com/jerusdp/ghdash/pull/216
+[#217]: https://github.com/jerusdp/ghdash/pull/217
 [Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.7...HEAD
 [0.1.7]: https://github.com/jerusdp/ghdash/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/jerusdp/ghdash/compare/v0.1.5...v0.1.6
