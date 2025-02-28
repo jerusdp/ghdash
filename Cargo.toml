@@ -34,7 +34,7 @@ clap = { version = "4.5.31", features = ["derive", "cargo"] }
 clap-verbosity-flag = "3.0.2"
 comfy-table = "7.1.4"
 confy = "0.6.1"
-log = "0.4.25"
+log = "0.4.26"
 opentelemetry = "0.27.1"
 opentelemetry-zipkin = { version = "0.27.0", features = [
     "reqwest-client",
