@@ -122,6 +122,7 @@ All notable changes to this project are documented in this file.
 - deps: update rust crate thiserror to 2.0.12(pr [#239])
 - deps: update rust crate trycmd to 0.15.9(pr [#240])
 - deps: update serde packages to 1.0.218(pr [#241])
+- deps: update rust crate clap to 4.5.32(pr [#243])
 
 ### Security
 
@@ -490,6 +491,7 @@ All notable changes to this project are documented in this file.
 [#239]: https://github.com/jerusdp/ghdash/pull/239
 [#240]: https://github.com/jerusdp/ghdash/pull/240
 [#241]: https://github.com/jerusdp/ghdash/pull/241
+[#243]: https://github.com/jerusdp/ghdash/pull/243
 [Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.7...HEAD
 [0.1.7]: https://github.com/jerusdp/ghdash/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/jerusdp/ghdash/compare/v0.1.5...v0.1.6
