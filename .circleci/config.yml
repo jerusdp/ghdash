@@ -3,7 +3,7 @@ version: 2.1
 parameters:
   min-rust-version:
     type: string
-    default: "1.75"
+    default: "1.81"
   fingerprint:
     type: string
     default: SHA256:OkxsH8Z6Iim6WDJBaII9eTT9aaO1f3eDc6IpsgYYPVg
@@ -17,7 +17,7 @@ parameters:
     description: "If true, the success pipeline will be executed."
 
 orbs:
-  toolkit: jerusdp/circleci-toolkit@1.19.0
+  toolkit: jerusdp/circleci-toolkit@2.5.1
 
 executors:
   rust-env:
