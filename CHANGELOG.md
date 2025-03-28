@@ -129,6 +129,7 @@ All notable changes to this project are documented in this file.
 - deps: update serde packages to 1.0.219(pr [#246])
 - deps: update rust crate octocrate to 2.2.0(pr [#248])
 - deps: update rust crate clap to 4.5.34(pr [#250])
+- deps: update rust crate log to 0.4.27(pr [#251])
 
 ### Security
 
@@ -504,6 +505,7 @@ All notable changes to this project are documented in this file.
 [#248]: https://github.com/jerusdp/ghdash/pull/248
 [#249]: https://github.com/jerusdp/ghdash/pull/249
 [#250]: https://github.com/jerusdp/ghdash/pull/250
+[#251]: https://github.com/jerusdp/ghdash/pull/251
 [Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.7...HEAD
 [0.1.7]: https://github.com/jerusdp/ghdash/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/jerusdp/ghdash/compare/v0.1.5...v0.1.6
