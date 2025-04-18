@@ -3,12 +3,12 @@ use std::collections::HashMap;
 use crate::Error;
 use bollard::container::ListContainersOptions;
 use bollard::Docker;
-use opentelemetry::global;
-use opentelemetry::trace::TraceError;
-use opentelemetry_sdk::runtime::Tokio;
-use opentelemetry_sdk::trace::Tracer;
+use opentelemetry::global::{self, BoxedTracer};
+use opentelemetry_sdk::trace::{BatchConfigBuilder, BatchSpanProcessor, SdkTracerProvider};
+use opentelemetry_sdk::Resource;
 
-use tracing::{info, span, Level};
+use opentelemetry_zipkin::ZipkinExporter;
+use tracing::info;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 
@@ -29,10 +29,11 @@ use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 ///
 pub async fn get_logging(verbosity: log::LevelFilter) -> Result<(), Error> {
     if zipkin_container_running(connect_docker().await).await {
-        let tracer = init_tracer()?;
+        let _tracer = init_tracer()?;
+
         tracing_subscriber::registry()
             .with(tracing_subscriber::EnvFilter::new("TRACE"))
-            .with(tracing_opentelemetry::layer().with_tracer(tracer))
+            // .with(tracing_opentelemetry::layer().with_tracer(tracer))
             .with(
                 fmt::Layer::default()
                     .pretty()
@@ -40,8 +41,26 @@ pub async fn get_logging(verbosity: log::LevelFilter) -> Result<(), Error> {
             )
             .try_init()?;
 
-        let span = span!(Level::INFO, "logging initiatilisation");
-        let _guard = span.enter();
+        // global::set_text_map_propagator(opentelemetry_zipkin::Propagator::new());
+
+        // let exporter = ZipkinExporter::builder().build()?;
+        // let provider = SdkTracerProvider::builder()
+        //     .with_simple_exporter(exporter)
+        //     .with_resource(
+        //         Resource::builder_empty()
+        //             .with_service_name("trace-demo")
+        //             .build(),
+        //     )
+        // .build();
+
+        //     let tracer = provider.
+
+        // global::set_tracer_provider(provider.clone());
+
+        // let tracer = global::tracer("zipkin-tracer");
+
+        //     let span = span!(Level::INFO, "logging initialisation");
+        //     let _guard = span.enter();
         info!("Initialised tracing and logging to console at {verbosity}");
     } else {
         let filter = EnvFilter::from(format!(
@@ -66,11 +85,36 @@ pub async fn get_logging(verbosity: log::LevelFilter) -> Result<(), Error> {
     Ok(())
 }
 
-fn init_tracer() -> Result<Tracer, TraceError> {
+fn init_tracer() -> Result<BoxedTracer, crate::Error> {
     global::set_text_map_propagator(opentelemetry_zipkin::Propagator::new());
-    opentelemetry_zipkin::new_pipeline()
-        .with_service_name("ghdash")
-        .install_batch(Tokio)
+    // opentelemetry_zipkin::new_pipeline()
+    //     .with_service_name("ghdash")
+    //     .install_batch(Tokio)
+
+    let exporter = ZipkinExporter::builder().build()?;
+
+    let batch = BatchSpanProcessor::builder(exporter)
+        .with_batch_config(
+            BatchConfigBuilder::default()
+                .with_max_queue_size(4096)
+                .build(),
+        )
+        .build();
+
+    let provider = SdkTracerProvider::builder()
+        .with_span_processor(batch)
+        .with_resource(
+            Resource::builder_empty()
+                .with_service_name("ghdash")
+                .build(),
+        )
+        .build();
+
+    global::set_tracer_provider(provider.clone());
+
+    let tracer = global::tracer("ghdash");
+
+    Ok(tracer)
 }
 
 /// # DockerConnection
@@ -81,7 +125,7 @@ fn init_tracer() -> Result<Tracer, TraceError> {
 pub enum DockerConnection {
     /// wraps the verified Docker connection configuration.
     Connection(Docker),
-    /// No verified configuraiton has been found.
+    /// No verified configuration has been found.
     NoConnection,
 }
 

@@ -80,7 +80,7 @@ async fn main() -> Result<(), Error> {
             print!("{dashboard}");
         }
     }
-    opentelemetry::global::shutdown_tracer_provider();
+    // opentelemetry::global::shutdown_tracer_provider();
 
     Ok(())
 }
