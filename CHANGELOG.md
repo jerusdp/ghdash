@@ -41,6 +41,7 @@ All notable changes to this project are documented in this file.
 - Renovate-on-fridays-only(pr [#197])
 - 🔧 chore(renovate)-merge tracing and opentelemetry package groups(pr [#249])
 - 👷 ci(circleci)-update circleci toolkit orb version(pr [#260])
+- 👷 ci(circleci)-add release-flag parameter and update workflows(pr [#261])
 
 ### Fixed
 
@@ -524,6 +525,7 @@ All notable changes to this project are documented in this file.
 [#257]: https://github.com/jerusdp/ghdash/pull/257
 [#259]: https://github.com/jerusdp/ghdash/pull/259
 [#260]: https://github.com/jerusdp/ghdash/pull/260
+[#261]: https://github.com/jerusdp/ghdash/pull/261
 [Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.7...HEAD
 [0.1.7]: https://github.com/jerusdp/ghdash/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/jerusdp/ghdash/compare/v0.1.5...v0.1.6
