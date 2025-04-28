@@ -122,6 +122,6 @@ workflows:
           min_rust_version: << pipeline.parameters.min-rust-version >>
           publish: false
           pcu_verbosity: "-vvvv"
-          pcu_push: true
-          update_pcu: true
+          when_pcu_push: true
+          when_update_pcu: true
           pcu_semver: true
