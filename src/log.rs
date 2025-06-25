@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::Error;
-use bollard::container::ListContainersOptions;
+use bollard::query_parameters::ListContainersOptions;
 use bollard::Docker;
 use opentelemetry::global::{self, BoxedTracer};
 use opentelemetry_sdk::trace::{BatchConfigBuilder, BatchSpanProcessor, SdkTracerProvider};
@@ -184,9 +184,10 @@ async fn zipkin_container_running(docker: DockerConnection) -> bool {
     let mut filters = HashMap::new();
     filters.insert(String::from("ancestor"), vec![String::from(TRACER_IMAGE)]);
     filters.insert(String::from("status"), vec![String::from("running")]);
+    let filters = Some(filters);
 
     let containers = docker
-        .list_containers(Some(ListContainersOptions::<String> {
+        .list_containers(Some(ListContainersOptions {
             all: true,
             filters,
             ..Default::default()
