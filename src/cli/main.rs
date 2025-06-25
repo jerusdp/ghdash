@@ -40,13 +40,13 @@ async fn main() -> Result<(), Error> {
                         DockerConnection::Connection(docker) => {
                             println!("Got a connection: {:#?}", docker);
                             let containers = docker
-                                .list_containers(Some(bollard::container::ListContainersOptions::<
-                                    String,
-                                > {
-                                    all: true,
-                                    // filters,
-                                    ..Default::default()
-                                }))
+                                .list_containers(Some(
+                                    bollard::query_parameters::ListContainersOptions {
+                                        all: true,
+                                        // filters,
+                                        ..Default::default()
+                                    },
+                                ))
                                 .await
                                 .unwrap();
 

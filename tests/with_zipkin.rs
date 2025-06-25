@@ -6,11 +6,11 @@ use std::{
 use futures_util::StreamExt;
 
 use bollard::{
-    container::{
+    models::PortBinding,
+    query_parameters::{
         CreateContainerOptions, ListContainersOptions, StartContainerOptions, StopContainerOptions,
         WaitContainerOptions,
     },
-    models::PortBinding,
     secret::HostConfig,
     Docker,
 };
@@ -60,9 +60,10 @@ async fn zipkin_container_running(docker: &Docker) -> ContainerState {
     let mut filters = HashMap::new();
     filters.insert(String::from("ancestor"), vec![String::from(TRACER_IMAGE)]);
     filters.insert(String::from("status"), vec![String::from("running")]);
+    let filters = Some(filters);
 
     let containers = docker
-        .list_containers(Some(ListContainersOptions::<String> {
+        .list_containers(Some(ListContainersOptions {
             all: true,
             filters,
             ..Default::default()
@@ -75,9 +76,10 @@ async fn zipkin_container_running(docker: &Docker) -> ContainerState {
     } else {
         let mut filters = HashMap::new();
         filters.insert(String::from("ancestor"), vec![String::from(TRACER_IMAGE)]);
+        let filters = Some(filters);
 
         let stopped_containers = docker
-            .list_containers(Some(ListContainersOptions::<String> {
+            .list_containers(Some(ListContainersOptions {
                 all: true,
                 filters,
                 ..Default::default()
@@ -98,7 +100,7 @@ async fn start_container(docker: &Docker, name: &str) -> bool {
     match docker
         .start_container(
             name,
-            Some(StartContainerOptions::<String> {
+            Some(StartContainerOptions {
                 ..Default::default()
             }),
         )
@@ -133,8 +135,8 @@ async fn start_container(docker: &Docker, name: &str) -> bool {
 
 async fn create_container(docker: &Docker, container: &str, image: &str) {
     let options = Some(CreateContainerOptions {
-        name: container,
-        platform: None,
+        name: Some(container.to_string()),
+        ..Default::default()
     });
 
     let port = "9411";
@@ -153,7 +155,7 @@ async fn create_container(docker: &Docker, container: &str, image: &str) {
         ..Default::default()
     });
 
-    let config = bollard::container::Config {
+    let config = bollard::models::ContainerCreateBody {
         image: Some(String::from(image)),
         // exposed_ports,
         host_config,
@@ -169,7 +171,10 @@ async fn create_container(docker: &Docker, container: &str, image: &str) {
 async fn stop_container(docker: &Docker, name: &str) {
     let name = name.trim_start_matches('/');
 
-    let options = Some(StopContainerOptions { t: 30 });
+    let options = Some(StopContainerOptions {
+        t: Some(30),
+        ..Default::default()
+    });
 
     docker
         .stop_container(name, options)
@@ -177,7 +182,7 @@ async fn stop_container(docker: &Docker, name: &str) {
         .expect("Stopping the container");
 
     let wait_options = Some(WaitContainerOptions {
-        condition: "not-running",
+        condition: "not-running".to_string(),
     });
 
     let stream = &mut docker.wait_container(name, wait_options).take(1);
