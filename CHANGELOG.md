@@ -159,6 +159,7 @@ All notable changes to this project are documented in this file.
 - deps: update rust crate trycmd to 0.15.10(pr [#279])
 - deps: update rust crate tokio to 1.46.1(pr [#280])
 - deps: update rust crate clap-verbosity-flag to 3.0.4(pr [#284])
+- deps: update rust crate anyhow to 1.0.99(pr [#281])
 
 ### Security
 
@@ -564,6 +565,7 @@ All notable changes to this project are documented in this file.
 [#279]: https://github.com/jerusdp/ghdash/pull/279
 [#280]: https://github.com/jerusdp/ghdash/pull/280
 [#284]: https://github.com/jerusdp/ghdash/pull/284
+[#281]: https://github.com/jerusdp/ghdash/pull/281
 [Unreleased]: https://github.com/jerusdp/ghdash/compare/v0.1.7...HEAD
 [0.1.7]: https://github.com/jerusdp/ghdash/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/jerusdp/ghdash/compare/v0.1.5...v0.1.6
