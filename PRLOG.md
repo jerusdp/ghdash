@@ -12,6 +12,7 @@ All notable changes to this project are documented in this file.
 - add new_with_github_app function to create GitHub API client(pr [#138])
 - add release-hook.sh script for automated changelog generation(pr [#288])
 - BREAKING: migrate to circleci-toolkit v4.2.1(pr [#303])
+- add security improvements to CI(pr [#314])
 
 ### Changed
 
@@ -626,6 +627,7 @@ All notable changes to this project are documented in this file.
 [#310]: https://github.com/jerusdp/ghdash/pull/310
 [#311]: https://github.com/jerusdp/ghdash/pull/311
 [#312]: https://github.com/digital-prstv/ghdash/pull/312
+[#314]: https://github.com/digital-prstv/ghdash/pull/314
 [Unreleased]: https://github.com/digital-prstv/ghdash/compare/v0.1.7...HEAD
 [0.1.7]: https://github.com/digital-prstv/ghdash/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/digital-prstv/ghdash/compare/v0.1.5...v0.1.6
